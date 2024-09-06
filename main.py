@@ -19,7 +19,7 @@ TEST_FOLDER = 'test_videos'
 # Load the pre-trained model
 
 # Replace with your GitHub raw URL
-model_url = 'https://github.com/n0v33n/SIH/blob/main/my_modeldeepfake.keras'
+model_url = 'https://raw.githubusercontent.com/n0v33n/SIH/main/my_modeldeepfake.keras'
 model_path = 'my_modeldeepfake.keras'
 
 # Function to download the model from the GitHub raw URL
