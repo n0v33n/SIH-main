@@ -1,0 +1,10 @@
+tensorflow==2.17.0
+keras==3.5.0
+matplotlib>=3.9.2
+pandas==2.2.2
+numpy==1.26.4
+imageio==2.35.1
+opencv-python==4.10.0.84
+fastapi==0.113.0
+uvicorn==0.30.4
+requests==2.32.3
