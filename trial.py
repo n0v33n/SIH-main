@@ -19,12 +19,35 @@ TEST_FOLDER='test_videos'
 # with open("model.json", "r") as json_file:
 #     model_json = json_file.read()
 # model = model_from_json(model_json)
-model_path = r'D:\Office\Project\AIML PRO\MY PRO\SIH\my_modeldeepfake.keras'
+model_url = 'https://raw.githubusercontent.com/n0v33n/SIH/main/my_modeldeepfake.keras'
+model_path = 'my_modeldeepfake.keras'
+
+# Function to download the model from the GitHub raw URL
+def download_model(model_url, model_path):
+    if not os.path.exists(model_path):
+        print(f"Downloading model from {model_url}...")
+        response = requests.get(model_url, stream=True)
+        if response.status_code == 200:
+            with open(model_path, 'wb') as model_file:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        model_file.write(chunk)
+            print(f"Model downloaded and saved at {model_path}")
+        else:
+            print(f"Failed to download the model. HTTP Status code: {response.status_code}")
+    else:
+        print("Model already exists locally")
+
+# Call the function to download the model if it's not present locally
+download_model(model_url, model_path)
+
+# Load the model using TensorFlow
 try:
     model = tf.keras.models.load_model(model_path)
     print("Model loaded successfully")
 except Exception as e:
     print(f"Error loading model: {e}")
+
 def crop_center_square(frame):
     y, x = frame.shape[0:2]
     min_dim = min(y, x)
