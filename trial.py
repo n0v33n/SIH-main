@@ -9,6 +9,7 @@ from tensorflow.keras.models import model_from_json
 from fastapi import FastAPI, UploadFile, Form,File
 from fastapi.responses import JSONResponse,HTMLResponse
 import io
+import requests
 app = FastAPI()
 IMG_SIZE = 224
 MAX_SEQ_LENGTH = 20
