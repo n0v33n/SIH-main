@@ -304,37 +304,27 @@ async def main():
 @app.post("/predict/")
 async def predict_post(video: UploadFile = File(...)):
     try:
-        def predict_video(frames):
-            """
-            Predict if a video is FAKE or REAL.
-            :param frames: A numpy array of shape (1, MAX_SEQ_LENGTH, NUM_FEATURES) containing the video frames' features.
-            :return: 'FAKE' or 'REAL'
-            """
+        # Save the uploaded video to a temporary file
+        temp_video_path = f"temp_{video.filename}"
+        with open(temp_video_path, "wb") as f:
+            f.write(await video.read())
 
-            # Assuming the input frames are already in the correct format for the model (features extracted)
-            frame_mask = np.ones((1, MAX_SEQ_LENGTH), dtype="bool")  # All frames present, so mask is fully '1'
-
-            # Predict using the loaded model
-            prediction = model.predict([frames, frame_mask])[0]
-
-            # Return the class label based on the prediction score
-            if prediction >= 0.5:
-                return "FAKE"
-            else:
-                return "REAL"
-
-        # Example usage (in web app you would take video input and extract features before this step)
-        # Here we assume `video_features` is a preprocessed numpy array of shape (1, MAX_SEQ_LENGTH, NUM_FEATURES)
-        video_features = np.random.rand(1, MAX_SEQ_LENGTH, NUM_FEATURES)  # Replace this with actual video feature extraction
+        # Load video frames and extract features
+        frames = load_video(temp_video_path)
+        frame_features, _ = prepare_single_video(frames)
 
         # Predict the class of the video
-        result = predict_video(video_features)
+        result = predict_video(frame_features)
+
+        # Clean up the temporary video file
+        os.remove(temp_video_path)
+
         return JSONResponse(content={"filename": video.filename, "prediction": result})
-    
+
     except Exception as e:
         return JSONResponse(content={"message": f"An error occurred: {str(e)}"}, status_code=500)
+
 # GET method for API route instructions
 @app.get("/predict/")
 async def predict_get():
     return JSONResponse(content={"message": "Please use POST method to upload a file"})
-
